@@ -137,7 +137,6 @@
 <div id="app"></div>
 
 <script>
-  // Basic data model
   const initialLists = [
     {
       id: 1,
@@ -163,7 +162,6 @@
     }
   ];
 
-  // Pure JavaScript implementation
   document.addEventListener('DOMContentLoaded', function() {
     let lists = [...initialLists];
     let nextCardId = 5;
@@ -171,34 +169,27 @@
     let addingCardToListId = null;
     let addingList = false;
 
-    // Functions
     function renderBoard() {
       const app = document.getElementById('app');
 
-      // Create header
       const header = document.createElement('header');
       header.innerHTML = '<h1>TickTickBoom</h1>';
 
-      // Create board container
       const boardContainer = document.createElement('div');
       boardContainer.className = 'board-container';
 
-      // Render lists
       lists.forEach(list => {
         const listElement = document.createElement('div');
         listElement.className = 'list';
 
-        // List header
         const listHeader = document.createElement('div');
         listHeader.className = 'list-header';
         listHeader.textContent = list.title;
         listElement.appendChild(listHeader);
 
-        // List cards container
         const listCards = document.createElement('div');
         listCards.className = 'list-cards';
 
-        // Render cards
         list.cards.forEach(card => {
           const cardElement = document.createElement('div');
           cardElement.className = 'card';
@@ -213,7 +204,6 @@
 
         listElement.appendChild(listCards);
 
-        // Add card button or form
         if (addingCardToListId === list.id) {
           const cardForm = document.createElement('div');
           cardForm.className = 'card-form';
@@ -261,7 +251,6 @@
           listElement.appendChild(addCardButton);
         }
 
-        // Add drag and drop for lists
         listElement.addEventListener('dragover', (e) => {
           e.preventDefault();
         });
@@ -272,14 +261,11 @@
           const sourceListId = parseInt(e.dataTransfer.getData('sourceListId'));
 
           if (sourceListId !== list.id) {
-            // Find the source list and card
             const sourceList = lists.find(l => l.id === sourceListId);
             const cardIndex = sourceList.cards.findIndex(c => c.id === cardId);
 
             if (cardIndex !== -1) {
-              // Remove from source list
               const [card] = sourceList.cards.splice(cardIndex, 1);
-              // Add to target list
               list.cards.push(card);
               renderBoard();
             }
@@ -289,7 +275,6 @@
         boardContainer.appendChild(listElement);
       });
 
-      // Add list button or form
       if (addingList) {
         const listFormContainer = document.createElement('div');
         listFormContainer.className = 'list';
@@ -347,19 +332,16 @@
         boardContainer.appendChild(addListButton);
       }
 
-      // Clear previous content and append new elements
       app.innerHTML = '';
       app.appendChild(header);
       app.appendChild(boardContainer);
 
-      // Focus the input/textarea for better UX
       setTimeout(() => {
         const autofocusElement = document.querySelector('[autofocus]');
         if (autofocusElement) autofocusElement.focus();
       }, 0);
     }
 
-    // Initial render
     renderBoard();
   });
 </script>
