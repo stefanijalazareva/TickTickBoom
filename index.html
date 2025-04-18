@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SolidJS Trello Clone</title>
+  <script src="https://cdn.jsdelivr.net/npm/solid-js@1.7.11/dist/solid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/solid-js@1.7.11/dist/solid-element.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+      background-color: #e1eaf7;
+      color: #4E4E4E;
+      line-height: 1.5;
+    }
+
+    header {
+      background-color: #809bce;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 20px;
+      margin-right: auto;
+    }
+
+    .board-container {
+      padding: 20px;
+      display: flex;
+      overflow-x: auto;
+      height: calc(100vh - 50px);
+    }
+
+    .list {
+      width: 270px;
+      margin-right: 10px;
+      background-color: #FDE2E4;
+      border-radius: 3px;
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+      flex-shrink: 0;
+    }
+
+    .list-header {
+      padding: 10px;
+      font-weight: bold;
+      color: #333333;
+    }
+
+    .list-cards {
+      padding: 0 8px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .card {
+      background-color: #FFFFFF;
+      border-radius: 3px;
+      box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+      margin-bottom: 8px;
+      padding: 8px;
+      cursor: pointer;
+      color: #4E4E4E;
+    }
+
+    .card:hover {
+      background-color: #c6def1;;
+    }
+
+    .add-card, .add-list {
+      padding: 8px;
+      color: gray;
+      cursor: pointer;
+      margin-top: 2px;
+      border-radius: 3px;
+    }
+
+    .add-card:hover, .add-list:hover {
+      background-color: #c6def1;
+      color: white;
+    }
+
+    .add-list {
+      background-color: #FDE2E4;
+      width: 270px;
+      flex-shrink: 0;
+    }
+
+    .card-form, .list-form {
+      padding: 8px;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      border-radius: 3px;
+      border: none;
+      padding: 8px;
+      resize: none;
+      margin-bottom: 8px;
+      background-color: #FFFFFF; /* 🍇 Clean input background */
+      box-shadow: inset 0 0 0 2px #FFB6B9; /* 🍇 Rose border */
+      color: #333333;
+    }
+
+    .form-buttons {
+      display: flex;
+      align-items: center;
+    }
+
+    button {
+      padding: 6px 12px;
+      background-color: #809bce;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    .cancel {
+      cursor: pointer;
+      color: #6b778c;
+    }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+  // Basic data model
+  const initialLists = [
+    {
+      id: 1,
+      title: 'Today’s Focus',
+      cards: [
+        { id: 1, content: 'Review morning goals & set focus for the day' },
+        { id: 2, content: 'Refactor task component logic for elegance' }
+      ]
+    },
+    {
+      id: 2,
+      title: 'Active Ops',
+      cards: [
+        { id: 3, content: 'Fixing delay in task removal animation' }
+      ]
+    },
+    {
+      id: 3,
+      title: 'Marked as Magic',
+      cards: [
+        { id: 4, content: 'Celebrated with coffee' }
+      ]
+    }
+  ];
+
+  // Pure JavaScript implementation
+  document.addEventListener('DOMContentLoaded', function() {
+    let lists = [...initialLists];
+    let nextCardId = 5;
+    let nextListId = 4;
+    let addingCardToListId = null;
+    let addingList = false;
+
+    // Functions
+    function renderBoard() {
+      const app = document.getElementById('app');
+
+      // Create header
+      const header = document.createElement('header');
+      header.innerHTML = '<h1>TickTickBoom</h1>';
+
+      // Create board container
+      const boardContainer = document.createElement('div');
+      boardContainer.className = 'board-container';
+
+      // Render lists
+      lists.forEach(list => {
+        const listElement = document.createElement('div');
+        listElement.className = 'list';
+
+        // List header
+        const listHeader = document.createElement('div');
+        listHeader.className = 'list-header';
+        listHeader.textContent = list.title;
+        listElement.appendChild(listHeader);
+
+        // List cards container
+        const listCards = document.createElement('div');
+        listCards.className = 'list-cards';
+
+        // Render cards
+        list.cards.forEach(card => {
+          const cardElement = document.createElement('div');
+          cardElement.className = 'card';
+          cardElement.textContent = card.content;
+          cardElement.draggable = true;
+          cardElement.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('cardId', card.id);
+            e.dataTransfer.setData('sourceListId', list.id);
+          });
+          listCards.appendChild(cardElement);
+        });
+
+        listElement.appendChild(listCards);
+
+        // Add card button or form
+        if (addingCardToListId === list.id) {
+          const cardForm = document.createElement('div');
+          cardForm.className = 'card-form';
+
+          const textarea = document.createElement('textarea');
+          textarea.placeholder = 'Enter a title for this task...';
+          textarea.autofocus = true;
+
+          const formButtons = document.createElement('div');
+          formButtons.className = 'form-buttons';
+
+          const addButton = document.createElement('button');
+          addButton.textContent = 'Add Task';
+          addButton.addEventListener('click', () => {
+            if (textarea.value.trim()) {
+              const newCard = { id: nextCardId++, content: textarea.value };
+              list.cards.push(newCard);
+              addingCardToListId = null;
+              renderBoard();
+            }
+          });
+
+          const cancelButton = document.createElement('span');
+          cancelButton.className = 'cancel';
+          cancelButton.textContent = '✕';
+          cancelButton.addEventListener('click', () => {
+            addingCardToListId = null;
+            renderBoard();
+          });
+
+          formButtons.appendChild(addButton);
+          formButtons.appendChild(cancelButton);
+
+          cardForm.appendChild(textarea);
+          cardForm.appendChild(formButtons);
+          listElement.appendChild(cardForm);
+        } else {
+          const addCardButton = document.createElement('div');
+          addCardButton.className = 'add-card';
+          addCardButton.textContent = '+ Add a Task';
+          addCardButton.addEventListener('click', () => {
+            addingCardToListId = list.id;
+            renderBoard();
+          });
+          listElement.appendChild(addCardButton);
+        }
+
+        // Add drag and drop for lists
+        listElement.addEventListener('dragover', (e) => {
+          e.preventDefault();
+        });
+
+        listElement.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const cardId = parseInt(e.dataTransfer.getData('cardId'));
+          const sourceListId = parseInt(e.dataTransfer.getData('sourceListId'));
+
+          if (sourceListId !== list.id) {
+            // Find the source list and card
+            const sourceList = lists.find(l => l.id === sourceListId);
+            const cardIndex = sourceList.cards.findIndex(c => c.id === cardId);
+
+            if (cardIndex !== -1) {
+              // Remove from source list
+              const [card] = sourceList.cards.splice(cardIndex, 1);
+              // Add to target list
+              list.cards.push(card);
+              renderBoard();
+            }
+          }
+        });
+
+        boardContainer.appendChild(listElement);
+      });
+
+      // Add list button or form
+      if (addingList) {
+        const listFormContainer = document.createElement('div');
+        listFormContainer.className = 'list';
+
+        const listForm = document.createElement('div');
+        listForm.className = 'list-form';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Enter list title...';
+        input.autofocus = true;
+
+        const formButtons = document.createElement('div');
+        formButtons.className = 'form-buttons';
+
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add List';
+        addButton.addEventListener('click', () => {
+          if (input.value.trim()) {
+            const newList = {
+              id: nextListId++,
+              title: input.value,
+              cards: []
+            };
+            lists.push(newList);
+            addingList = false;
+            renderBoard();
+          }
+        });
+
+        const cancelButton = document.createElement('span');
+        cancelButton.className = 'cancel';
+        cancelButton.textContent = '✕';
+        cancelButton.addEventListener('click', () => {
+          addingList = false;
+          renderBoard();
+        });
+
+        formButtons.appendChild(addButton);
+        formButtons.appendChild(cancelButton);
+
+        listForm.appendChild(input);
+        listForm.appendChild(formButtons);
+        listFormContainer.appendChild(listForm);
+
+        boardContainer.appendChild(listFormContainer);
+      } else {
+        const addListButton = document.createElement('div');
+        addListButton.className = 'add-list';
+        addListButton.textContent = '+ Add another list';
+        addListButton.addEventListener('click', () => {
+          addingList = true;
+          renderBoard();
+        });
+        boardContainer.appendChild(addListButton);
+      }
+
+      // Clear previous content and append new elements
+      app.innerHTML = '';
+      app.appendChild(header);
+      app.appendChild(boardContainer);
+
+      // Focus the input/textarea for better UX
+      setTimeout(() => {
+        const autofocusElement = document.querySelector('[autofocus]');
+        if (autofocusElement) autofocusElement.focus();
+      }, 0);
+    }
+
+    // Initial render
+    renderBoard();
+  });
+</script>
+</body>
+</html>
