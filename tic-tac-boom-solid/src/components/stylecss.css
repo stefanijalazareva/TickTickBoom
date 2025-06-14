@@ -1,0 +1,18 @@
+.notification {
+    position: fixed; /* So it floats over content */
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure it's on top */
+    transition: top 0.3s ease-out, opacity 0.5s ease-out; /* Smooth transitions */
+    opacity: 0.95;
+    max-width: 300px;
+}
+
+.notification-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}

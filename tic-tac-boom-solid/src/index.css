@@ -1,0 +1,510 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #809bce; /* Light gray background */
+  color: #333;
+  display: flex;
+  justify-content: center; /* Center the entire app horizontally */
+  align-items: flex-start; /* Align to the top vertically */
+  min-height: 100vh; /* Ensure body takes full viewport height */
+  box-sizing: border-box; /* Include padding in element's total width and height */
+}
+
+#app {
+  max-width: 1200px; /* Max width for the entire app container */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header Styles */
+.tictacboom {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+header h1 {
+  color: #222;
+  font-size: 2.5em;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Search Bar */
+.search-bar {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px 15px; /* Slightly more padding */
+  font-size: 1.1rem; /* Slightly larger font */
+  border: 1px solid #ddd;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08); /* Subtle inner shadow */
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box; /* Include padding in element's total width */
+}
+
+.search-bar:focus {
+  border-color: #f5c542; /* Highlight on focus */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 3px rgba(245, 197, 66, 0.3);
+  outline: none;
+}
+
+/* Category Filter Bar */
+.category-filter-bar {
+  display: flex;
+  flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+  gap: 10px; /* Space between filter buttons */
+  margin-bottom: 25px;
+  justify-content: center; /* Center filter buttons */
+}
+
+.category-filter {
+  margin: 0; /* Remove default margin */
+  padding: 8px 15px; /* More padding for better touch targets */
+  border-radius: 20px; /* Pill-shaped buttons */
+  border: 1px solid #ccc;
+  background: #fff; /* White background for unselected */
+  color: #555;
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.category-filter:hover {
+  background: #eee;
+  border-color: #bbb;
+}
+
+.category-filter.selected {
+  background: #f5c542; /* Highlight color */
+  color: #222;
+  border-color: #f5c542;
+  box-shadow: 0 2px 5px rgba(245, 197, 66, 0.3);
+}
+
+/* Board Container */
+.board-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* List Styles */
+.list {
+  background-color: #d0e1f5;
+  border-radius: 8px;
+  padding: 15px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.list-header {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #222;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.list-cards {
+  flex-grow: 1; /* Allow cards container to take available space */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between cards */
+  padding-bottom: 5px; /* Space below last card before add button */
+}
+
+/* Add Task / Add Category Buttons */
+.add-task-btn,
+.add-category-btn {
+  background: #f5c542;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px; /* More padding */
+  margin-top: 10px; /* Spacing from cards or list header */
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 100%; /* Full width for button in list */
+  margin-bottom: 5px;
+}
+
+.add-category-bar {
+  margin-bottom: 20px; /* Space below add category button */
+  text-align: center; /* Center the button if it's the only element */
+}
+
+
+.add-task-btn:hover,
+.add-category-btn:hover {
+  background: #e0b03d; /* Slightly darker yellow on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.add-task-btn:active,
+.add-category-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Styles */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  cursor: grab; /* Indicate draggable */
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative; /* For profile icon positioning */
+  margin-top: 5px;
+}
+
+.card:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.card:active {
+  cursor: grabbing; /* Indicate dragging */
+}
+
+.profile-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  float: right; /* Position profile icon to the right */
+  border: 2px solid #f5c542; /* Add a subtle border */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+  width: 100%;
+  max-height: 120px;
+  object-fit: cover;
+  border-radius: 6px; /* Slightly smaller radius for image */
+  margin-bottom: 8px; /* More margin below image */
+  display: block; /* Ensures it takes full width and new line */
+}
+
+.card-labels {
+  margin: 6px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px; /* Space between labels */
+}
+
+.card-label {
+  display: inline-block;
+  background: #f5c542;
+  color: #333;
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-size: 0.75em; /* Slightly smaller font */
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card-category {
+  font-size: 0.8em;
+  color: #888;
+  margin-bottom: 6px; /* More margin */
+}
+
+.card-content {
+  font-weight: 500;
+  margin-bottom: 10px; /* Space below content */
+  line-height: 1.4;
+  clear: both; /* Clear float from profile icon */
+}
+
+/* Due Date & Reminder Styles */
+.card-due-date,
+.card-reminder {
+  font-size: 0.85em;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between icon and text */
+  margin-bottom: 5px;
+}
+
+.card-due-date span:first-child,
+.card-reminder span:first-child {
+  font-size: 1.1em; /* Make icons slightly larger */
+}
+
+.due-date-overdue {
+  color: #e74c3c; /* Red for overdue */
+  font-weight: bold;
+}
+.due-date-today {
+  color: #f39c12; /* Orange for due today */
+  font-weight: bold;
+}
+.due-date-tomorrow {
+  color: #3498db; /* Blue for due tomorrow */
+}
+
+.reminder-due-text {
+  color: #27ae60; /* Green when reminder is due (or very soon) */
+  font-weight: bold;
+}
+
+/* Share Button */
+.share-btn {
+  background: #e6e6e6;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px; /* Increased padding */
+  cursor: pointer;
+  margin-top: 5px; /* Space above button */
+  font-size: 0.8em;
+  color: #555;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.share-btn:hover {
+  background: #d4d4d4;
+  transform: translateY(-1px);
+}
+
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  animation: slideInFromTop 0.3s ease-out forwards;
+  opacity: 0; /* Start hidden until animation runs */
+  transform: translateY(-20px);
+}
+
+@keyframes slideInFromTop {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #222;
+}
+
+.modal .profile-icon {
+  width: 40px; /* Larger icon in modal header */
+  height: 40px;
+  margin-right: 12px;
+  border: 3px solid #f5c542;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.modal label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #444;
+}
+
+.modal input[type="text"],
+.modal input[type="datetime-local"],
+.modal input[type="date"],
+.modal textarea,
+.modal select {
+  width: 100%; /* Full width */
+  padding: 10px;
+  margin-bottom: 12px; /* Increased margin */
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1em;
+  box-sizing: border-box; /* Include padding in width */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal input:focus,
+.modal textarea:focus,
+.modal select:focus {
+  border-color: #f5c542;
+  box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.3);
+  outline: none;
+}
+
+.modal textarea {
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 80px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.modal-buttons button:first-child { /* Save/Add button */
+  background: #28a745; /* Green for primary action */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modal-buttons button:first-child:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.modal-buttons button:last-child { /* Cancel/Clear button */
+  background: #dc3545; /* Red for secondary/destructive action */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modal-buttons button:last-child:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+
+/* Notification Styles */
+.notification {
+  position: fixed;
+  right: 20px;
+  background-color: #333;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: top 0.3s ease-out, opacity 0.5s ease-out;
+  opacity: 0.95;
+  max-width: 300px;
+  animation: slideInFromRight 0.5s ease-out; /* Entry animation */
+}
+
+.notification-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Drag Over Effect for Lists */
+.list-cards.drag-over {
+  background-color: rgba(245, 197, 66, 0.2); /* Light yellow overlay */
+  border: 2px dashed #f5c542; /* Dashed border */
+  border-radius: 8px;
+  transform: scale(1.01); /* Slight grow effect */
+  transition: all 0.15s ease-in-out;
+}
+
+
+/* Animations */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 0.95;
+  }
+}
+
+
+/* Responsive Design Considerations */
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+
+  header h1 {
+    font-size: 2em;
+  }
+
+  .board-container {
+    grid-template-columns: 1fr; /* Stack lists vertically on small screens */
+  }
+
+  .list {
+    margin-bottom: 20px;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+
+  .modal-header {
+    font-size: 1.3em;
+  }
+
+  .notification {
+    right: 10px;
+    left: 10px; /* Take full width on small screens */
+    max-width: unset;
+  }
+}
