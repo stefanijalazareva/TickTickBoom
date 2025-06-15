@@ -1,4 +1,3 @@
-// src/components/List.jsx
 import { For } from 'solid-js';
 import Card from './Card.jsx';
 
@@ -49,8 +48,8 @@ function List(props) {
                     {(card) => (
                         <Card
                             card={card}
-                            listId={list.id} // Pass listId to Card
-                            onEdit={(editedCard) => props.onEditCard(editedCard, list.id)} /* Pass list.id along with card */
+                            listId={list.id}
+                            onEdit={(editedCard) => props.onEditCard(editedCard, list.id)}
                             onDelete={props.onDeleteCard}
                         />
                     )}

@@ -1,10 +1,7 @@
-// src/components/CardModal.jsx
 import { createSignal, createEffect, For, Show } from 'solid-js';
 
 function CardModal(props) {
     const isNew = props.isNew;
-    // Use createMemo to derive initial values from props.card.
-    // This will re-run if props.card changes.
     const cardData = () => props.card || {
         content: '',
         description: '',
@@ -16,7 +13,6 @@ function CardModal(props) {
         dueDate: null
     };
 
-    // Signals for form fields.
     const [content, setContent] = createSignal('');
     const [description, setDescription] = createSignal('');
     const [category, setCategory] = createSignal('');
@@ -27,8 +23,6 @@ function CardModal(props) {
     const [reminder, setReminder] = createSignal('');
     const [dueDate, setDueDate] = createSignal('');
 
-    // IMPORTANT: This effect synchronizes the modal's internal signals
-    // with the card data passed via props whenever cardData() changes.
     createEffect(() => {
         const currentCard = cardData();
         setContent(currentCard.content || '');
@@ -37,10 +31,9 @@ function CardModal(props) {
         setLabels(currentCard.labels ? currentCard.labels.join(', ') : '');
         setImage(currentCard.image || '');
         setProfileIcon(currentCard.profileIcon || '');
-        // Format dates for input type="datetime-local" and type="date"
         setReminder(currentCard.reminder ? new Date(currentCard.reminder).toISOString().slice(0, 16) : '');
         setDueDate(currentCard.dueDate ? new Date(currentCard.dueDate).toISOString().slice(0, 10) : '');
-        setCustomCategory(''); // Always clear custom category field on new card load/edit
+        setCustomCategory('');
     });
 
 
@@ -49,7 +42,7 @@ function CardModal(props) {
     const handleSave = () => {
         const finalCategory = category() === '__custom__' ? customCategory().trim() : category();
         const updatedCard = {
-            ...cardData(), // Use current cardData (from prop) to retain ID if editing
+            ...cardData(),
             content: content().trim(),
             description: description(),
             category: finalCategory,
@@ -64,12 +57,12 @@ function CardModal(props) {
     };
 
     const handleClear = () => {
-        props.onClose(); // Consistently acts as "Cancel" and closes the modal
+        props.onClose();
     };
 
     const handleDeleteClick = () => {
         console.log(`CardModal: Deleting card ID: ${cardData().id} from list ID: ${props.listId}`);
-        if (props.onDelete && cardData().id && props.listId) { // Ensure cardId and listId are valid
+        if (props.onDelete && cardData().id && props.listId) {
             props.onDelete(cardData().id, props.listId);
             props.onClose();
         } else {
@@ -88,9 +81,8 @@ function CardModal(props) {
         }
     };
 
-    let contentInputRef; // Ref to automatically focus the content input
+    let contentInputRef;
     createEffect(() => {
-        // Only focus if the modal is actually open and contentInputRef is valid
         if (contentInputRef && (props.editingCard || props.addingCardToListId)) {
             contentInputRef.focus();
         }

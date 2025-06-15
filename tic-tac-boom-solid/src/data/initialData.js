@@ -1,5 +1,3 @@
-// src/data/initialData.js
-
 export const initialLists = [
     {
         id: 1,

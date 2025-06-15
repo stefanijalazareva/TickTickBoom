@@ -1,34 +1,24 @@
 import { createSignal } from 'solid-js';
 
 function AddCategoryModal(props) {
-    // props:
-    // - onAdd: A function from the parent (App.jsx) to call when a new category is added.
-    //          It expects the new category name as an argument.
-    // - onClose: A function from the parent (App.jsx) to call to close the modal.
-
-    // Signal to store the value of the input field for the new category name
     const [newCategoryName, setNewCategoryName] = createSignal('');
 
-    // Handle input changes (controlled component pattern)
     const handleInputChange = (e) => {
         setNewCategoryName(e.target.value);
     };
 
-    // Handle the "Add Category" button click
     const handleAddClick = () => {
         const trimmedName = newCategoryName().trim();
-        if (trimmedName) { // Only add if the input is not empty
-            props.onAdd(trimmedName); // Call the parent's onAdd function
+        if (trimmedName) {
+            props.onAdd(trimmedName);
         }
-        props.onClose(); // Always close the modal after attempting to add
+        props.onClose();
     };
 
-    // Handle the "Cancel" button click or modal background click
     const handleCancelClick = () => {
-        props.onClose(); // Simply close the modal
+        props.onClose();
     };
 
-    // Handle keyboard events, specifically 'Enter' to add and 'Escape' to cancel
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleAddClick();
@@ -38,24 +28,23 @@ function AddCategoryModal(props) {
     };
 
     return (
-        // The modal overlay. Clicking outside the modal content closes it.
         <div class="modal" onClick={(e) => e.target === e.currentTarget && handleCancelClick()}>
             <div class="modal-content">
                 <h3>Add Category</h3>
                 <input
                     type="text"
                     placeholder="Category name"
-                    value={newCategoryName()} // Controlled by newCategoryName signal
+                    value={newCategoryName()}
                     onInput={handleInputChange}
-                    onKeyDown={handleKeyDown} // Listen for Enter/Escape
+                    onKeyDown={handleKeyDown}
                     style="width: 100%; margin-bottom: 8px;"
-                    autofocus // Automatically focus the input when the modal opens
+                    autofocus
                 />
-                <div class="modal-buttons"> {/* Added a div for button alignment/styling */}
+                <div class="modal-buttons"> {}
                     <button class="add-category-btn" onClick={handleAddClick}>
                         Add Category
                     </button>
-                    <button class="cancel-btn" onClick={handleCancelClick} style="margin-left: 8px;"> {/* Added some margin */}
+                    <button class="cancel-btn" onClick={handleCancelClick} style="margin-left: 8px;"> {}
                         Cancel
                     </button>
                 </div>

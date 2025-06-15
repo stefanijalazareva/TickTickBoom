@@ -1,10 +1,9 @@
-// src/components/Card.jsx
 import { Show, For } from 'solid-js';
 import { formatDueDate, formatReminderTime, getDueDateStatus, isReminderDue, showBrowserNotification } from '../utils/utils.js';
 
 function Card(props) {
     const card = props.card;
-    const listId = props.listId; // This prop holds the listId for *this* card's parent list
+    const listId = props.listId;
 
     const handleShare = (e) => {
         e.stopPropagation();
@@ -32,7 +31,7 @@ function Card(props) {
     return (
         <div
             class="card"
-            onClick={() => props.onEdit(card, listId)} /* Pass card AND its listId to the onEdit handler */
+            onClick={() => props.onEdit(card, listId)}
             draggable="true"
             onDragStart={(e) => {
                 e.dataTransfer.setData('cardId', card.id);

@@ -1,27 +1,22 @@
 import { For } from 'solid-js';
 
 function CategoryFilter(props) {
-    // props:
-    // - categories: an array of strings (e.g., ['Work', 'Personal', 'Daily'])
-    // - selectedCategory: a string indicating the currently selected category, or ''
-    // - onSelect: a callback function to inform the parent about category selection
-
     const handleCategoryClick = (category) => {
-        props.onSelect(category); // Inform the parent which category was clicked
+        props.onSelect(category);
     };
 
     const handleClearFilter = () => {
-        props.onSelect(''); // Clear the filter by sending an empty string
+        props.onSelect('');
     };
 
     return (
-        <div class="category-filter-bar"> {/* Added a wrapper div for styling flexibility */}
+        <div class="category-filter-bar"> {}
             <For each={props.categories}>
                 {(category) => (
                     <button
                         classList={{
-                            'category-filter': true, // Base class for all buttons
-                            selected: props.selectedCategory === category // Add 'selected' class if it's the active filter
+                            'category-filter': true,
+                            selected: props.selectedCategory === category
                         }}
                         onClick={() => handleCategoryClick(category)}
                     >
@@ -30,7 +25,7 @@ function CategoryFilter(props) {
                 )}
             </For>
 
-            {/* Show Clear filter button only if a category is selected */}
+            {}
             <Show when={props.selectedCategory}>
                 <button class="category-filter" onClick={handleClearFilter}>
                     Clear filter

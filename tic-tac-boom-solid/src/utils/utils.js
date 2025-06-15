@@ -1,11 +1,6 @@
-// src/utils/utils.js
-
-// --- Reminder Setup Logic (More robust version for SolidJS) ---
-// This will need to be managed carefully, likely in App.jsx or a store.
 let reminderIntervals = new Map(); // Keep track of timeouts for reminders
 
 export function setupReminders(lists, onReminderDueCallback) {
-    // Clear any existing reminders to prevent duplicates when lists change
     reminderIntervals.forEach(intervalId => clearTimeout(intervalId));
     reminderIntervals.clear();
 
@@ -18,9 +13,7 @@ export function setupReminders(lists, onReminderDueCallback) {
 
                 if (timeUntilReminder > 0) {
                     const timeoutId = setTimeout(() => {
-                        // Trigger the callback provided by App.jsx
                         onReminderDueCallback(card);
-                        // Optionally remove the reminder from the map after it fires
                         reminderIntervals.delete(card.id);
                     }, timeUntilReminder);
                     reminderIntervals.set(card.id, timeoutId);
@@ -30,9 +23,6 @@ export function setupReminders(lists, onReminderDueCallback) {
     });
 }
 
-// --- Notification (browser API) ---
-// This is for native browser notifications. The app's internal notification signal
-// in App.jsx handles the in-app notification display.
 export function showBrowserNotification(card) {
     if ('Notification' in window && Notification.permission === 'granted') {
         new Notification('Task Reminder', {
@@ -42,17 +32,15 @@ export function showBrowserNotification(card) {
     }
 }
 
-// --- Formatting and Status Utilities (from your original code) ---
 export function formatReminderTime(isoString) {
     if (!isoString) return '';
     const date = new Date(isoString);
     const now = new Date();
     const diff = date - now;
-    if (diff < 0) return 'Overdue'; // Reminder already passed
-    if (diff < 60000) return `${Math.floor(diff / 1000)}s`; // Show seconds if less than a minute
+    if (diff < 0) return 'Overdue';
+    if (diff < 60000) return `${Math.floor(diff / 1000)}s`;
     if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
     if (diff < 86400000) return `${Math.floor(diff / 3600000)}h`;
-    // If more than a day, show the localized date
     return date.toLocaleDateString();
 }
 
@@ -94,6 +82,5 @@ export function getDueDateStatus(isoString) {
 }
 
 export function isReminderDue(isoString) {
-    // Check if reminder time is in the past or current moment
     return new Date(isoString) <= new Date();
 }

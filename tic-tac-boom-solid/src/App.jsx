@@ -1,4 +1,3 @@
-// src/App.jsx
 import { createSignal, createEffect, For, Show } from 'solid-js';
 import Header from './components/Header.jsx';
 import SearchBar from './components/SearchBar.jsx';
@@ -15,21 +14,18 @@ const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 function App() {
   const [lists, setLists] = createSignal(deepClone(initialLists));
   const [nextCardId, setNextCardId] = createSignal(5);
-  const [nextListId, setNextListId] = createSignal(4); // Not actively used but kept for consistency
+  const [nextListId, setNextListId] = createSignal(4);
 
-  // Modal and UI state
   const [addingCardToListId, setAddingCardToListId] = createSignal(null);
   const [editingCard, setEditingCard] = createSignal(null);
-  const [currentModalListId, setCurrentModalListId] = createSignal(null); // Tracks the listId for the modal's context
+  const [currentModalListId, setCurrentModalListId] = createSignal(null);
   const [showAddCategoryModal, setShowAddCategoryModal] = createSignal(false);
   const [notifications, setNotifications] = createSignal([]);
 
-  // Search and Category Filter state
   const [searchQuery, setSearchQuery] = createSignal('');
   const [selectedCategory, setSelectedCategory] = createSignal('');
   const [categories, setCategories] = createSignal([]);
 
-  // Effects
   createEffect(() => {
     const allCategories = new Set(lists().flatMap(list => list.cards.map(card => card.category).filter(Boolean)));
     setCategories(Array.from(allCategories));
@@ -50,7 +46,6 @@ function App() {
     }
   });
 
-  // Event Handlers
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
@@ -91,7 +86,6 @@ function App() {
       }
       return updatedLists;
     });
-    // Reset modal state after saving
     setEditingCard(null);
     setAddingCardToListId(null);
     setCurrentModalListId(null);
@@ -112,7 +106,6 @@ function App() {
       console.log('Lists after deletion:', updatedLists);
       return updatedLists;
     });
-    // Reset modal state after deleting
     setEditingCard(null);
     setAddingCardToListId(null);
     setCurrentModalListId(null);
@@ -151,22 +144,18 @@ function App() {
     });
   };
 
-  // HANDLER FOR OPENING NEW CARD MODAL (from List component)
   const openNewCardModal = (listId) => {
     setAddingCardToListId(listId);
     setCurrentModalListId(listId);
     setEditingCard(null);
   };
 
-  // HANDLER FOR OPENING EDIT CARD MODAL (from Card component)
-  // This handler now ensures both the card object AND its listId are set in state
   const openEditCardModal = (card, listId) => {
     setEditingCard(card);
     setCurrentModalListId(listId);
     setAddingCardToListId(null);
   };
 
-  // Derived State / Filtering Logic
   const filteredLists = () => {
     const currentSearchQuery = searchQuery().toLowerCase();
     const currentSelectedCategory = selectedCategory();
@@ -219,7 +208,7 @@ function App() {
                 <List
                     list={list}
                     onAddCard={openNewCardModal}
-                    onEditCard={openEditCardModal} // Pass the handler that now correctly receives listId
+                    onEditCard={openEditCardModal}
                     onDeleteCard={handleDeleteCard}
                     onMoveCard={handleMoveCard}
                 />
@@ -234,15 +223,15 @@ function App() {
           />
         </Show>
 
-        {/* CardModal visibility: show if editingCard OR addingCardToListId is truthy */}
+        {}
         <Show when={editingCard() || addingCardToListId()}>
           <CardModal
-              card={editingCard()} // Pass the card object for editing (will be null for new)
-              listId={currentModalListId()} // This consistently passes the correct listId
-              isNew={!!addingCardToListId()} // True if adding new, false if editing
+              card={editingCard()}
+              listId={currentModalListId()}
+              isNew={!!addingCardToListId()}
               categories={categories()}
               onSave={handleSaveCard}
-              onDelete={handleDeleteCard} // Pass delete handler to CardModal
+              onDelete={handleDeleteCard}
               onClose={() => { setEditingCard(null); setAddingCardToListId(null); setCurrentModalListId(null); }}
           />
         </Show>
